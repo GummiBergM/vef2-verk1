@@ -52,6 +52,9 @@ function generateQuestionHtml(q) {
 }
 
 async function main() {
+    const distPath = './dist';
+    await fs.mkdir(distPath);
+
     const content = await fs.readFile("./questions.csv", "utf-8");
 
     const lines = content.split("\n");
