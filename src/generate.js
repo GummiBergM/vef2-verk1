@@ -6,11 +6,11 @@ function parseLine(line) {
     const split = line.split(",");
 
     /*
-    1   Nei	  Flokkanúmer
-    2	Já	  Undirflokkur ef til staðar
-    3 	Nei 	Erfiðleikastig: 1: Létt, 2: Meðal, 3: Erfið
-    4 	Já	  Gæðastig: 1: Slöpp, 2: Góð, 3: Ágæt
-    5 	Nei 	Spurningin
+    1   Nei	    Flokkanúmer
+    2	Já	    Undirflokkur ef til staðar
+    3 	Nei     Erfiðleikastig: 1: Létt, 2: Meðal, 3: Erfið
+    4 	Já	    Gæðastig: 1: Slöpp, 2: Góð, 3: Ágæt
+    5 	Nei     Spurningin
     6	Nei 	Svarið
     
     1 	Almenn kunnátta
@@ -52,8 +52,8 @@ function generateQuestionHtml(q) {
 }
 
 async function main() {
-    const distPath = './dist';
-    await fs.mkdir(distPath);
+    const distPath = "./dist";
+    await fs.mkdir(distPath, { recursive: true });
 
     const content = await fs.readFile("./questions.csv", "utf-8");
 
@@ -61,18 +61,24 @@ async function main() {
 
     const questions = lines.map(parseLine);
 
-    const qualityHistoryQuestions = questions
-        .filter((q) => q.categoryNumber === "4" && q.quality === "3")
-        .slice(0, MAX_QUESTIONS_PER_CATEGORY);
+    const categories = [
+        ["1", "general_knowledge"],
+        ["2", "nature_and_science"],
+        ["3", "books_and_arts"],
+        ["4", "history"],
+        ["5", "geology"],
+        ["6", "entertainment_and_fun"],
+        ["7", "sports"],
+    ];
 
-    console.log(qualityHistoryQuestions);
+    for (const [catNumber, fileName] of categories) {
+        const qs = questions
+            .filter((q) => q.categoryNumber === catNumber)
+            .slice(0, MAX_QUESTIONS_PER_CATEGORY);
 
-    //const output = generateQuestionHtml(qualityHistoryQuestion[0]);
-    const output = qualityHistoryQuestions.map(generateQuestionHtml).join("\n");
-
-    const path = "./dist/saga.html";
-
-    fs.writeFile(path, output, "utf-8");
+        const output = qs.map(generateQuestionHtml).join("\n");
+        await fs.writeFile(`./dist/${fileName}.html`, output, "utf-8");
+    }
 }
 
 main().catch((error) => {
