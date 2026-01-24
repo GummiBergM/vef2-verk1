@@ -1,1 +1,137 @@
 /* útfæra */
+:root {
+    /* COLOURS */
+
+    --white: #eeeeee;
+    --teal: #00adb5;
+    --gray: #393e46;
+    --black: #222831;
+
+    --teal-hover: #85d0d4;
+    --gray-hover: #6f7682;
+    /* SETTINGS */
+
+    --radius: 12px;
+}
+
+@font-face {
+    font-family: "Dosis";
+    src: url(../fonts/Dosis-VariableFont_wght.ttf) format(woff2);
+}
+
+body {
+    background-color: var(--white);
+    margin: 0;
+    padding: 24px;
+    font-family: "Dosis";
+}
+
+.categories {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+}
+
+@media (min-width: 500px) {
+    .categories {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 700px) {
+    .categories {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 900px) {
+    .categories {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.card {
+    background-color: var(--teal);
+    border-radius: var(--radius);
+
+    display: grid;
+    width: auto;
+    margin: 5px;
+    padding: 5px;
+
+    transition: background-color 0.1s ease-out;
+}
+
+.card:hover {
+    background-color: var(--teal-hover);
+}
+
+.card a {
+    color: var(--white);
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+
+    width: 100%;
+    height: 100%;
+}
+
+.title {
+    margin: auto;
+    margin-top: 20vh;
+    color: var(--gray);
+    width: 100%;
+    text-align: center;
+}
+.title a {
+    color: var(--white);
+    background-color: var(--gray);
+    text-decoration: none;
+    padding: 5px 20px;
+    border-radius: var(--radius);
+
+    transition: background-color 0.1s ease-out;
+}
+
+.title a:hover {
+    background-color: var(--gray-hover);
+}
+
+.questions {
+    margin-top: 50px;
+}
+
+.question {
+    background-color: var(--teal);
+    color: var(--white);
+
+    border-radius: var(--radius);
+    padding: 5px;
+    margin: 10px 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: background-color 0.1s ease-out;
+}
+
+.question > p {
+    opacity: 0;
+    padding: 0px 10px;
+    transition: opacity 0.1s ease-out;
+}
+
+.question > h3 {
+    padding: 0px 10px;
+}
+
+.clickedCard {
+    background-color: var(--gray);
+}
+
+.clickedCard > p {
+    opacity: 1;
+}

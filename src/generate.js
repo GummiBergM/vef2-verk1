@@ -1,26 +1,20 @@
 import fs from "node:fs/promises";
+import path from "node:path";
 
 const MAX_QUESTIONS_PER_CATEGORY = 100;
 
+const categories = [
+    ["1", "general_knowledge", "Almenn kunnátta"],
+    ["2", "nature_and_science", "Náttúra og vísindi"],
+    ["3", "books_and_arts", "Bókmenntir og listir"],
+    ["4", "history", "Saga"],
+    ["5", "geology", "Landafræði"],
+    ["6", "entertainment_and_fun", "Skemmtun og afþreying"],
+    ["7", "sports", "Íþróttir og tómstundir"],
+];
+
 function parseLine(line) {
     const split = line.split(",");
-
-    /*
-    1   Nei	    Flokkanúmer
-    2	Já	    Undirflokkur ef til staðar
-    3 	Nei     Erfiðleikastig: 1: Létt, 2: Meðal, 3: Erfið
-    4 	Já	    Gæðastig: 1: Slöpp, 2: Góð, 3: Ágæt
-    5 	Nei     Spurningin
-    6	Nei 	Svarið
-    
-    1 	Almenn kunnátta
-    2	Náttúra og vísindi
-    3 	Bókmenntir og listir
-    4 	Saga
-    5 	Landafræði
-    6 	Skemmtun og afþreying
-    7 	Íþróttir og tómstundir
-    */
 
     const categoryNumber = split[0];
     const subNumber = split[1];
@@ -41,12 +35,40 @@ function parseLine(line) {
     return q;
 }
 
+function generateMainHtml(title) {
+    return `
+<!doctype html>
+<html lang="is">
+  <head>
+    <title>${title}</title>
+    <link rel="stylesheet" href="./styles.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  
+  <body>
+    <div class="title">
+      <h1>${title}</h1>
+      <p><a href="./index.html">Til baka</a></p>
+    </div>
+  <main class="questions">`;
+}
+
+function generateEndHtml() {
+    return `
+    </main>
+    <script src="./questions.js"></script>
+  </body>
+</html>
+    `;
+}
+
 function generateQuestionHtml(q) {
     const html = `
-        <section>
-          <h3>${q.question}</h3>
-          <p>${q.answer}</p>
-        </section>`;
+    <section class="question">
+      <h3>${q.question}</h3>
+      <p>${q.answer}</p>
+    </section>`;
 
     return html;
 }
@@ -61,23 +83,27 @@ async function main() {
 
     const questions = lines.map(parseLine);
 
-    const categories = [
-        ["1", "general_knowledge"],
-        ["2", "nature_and_science"],
-        ["3", "books_and_arts"],
-        ["4", "history"],
-        ["5", "geology"],
-        ["6", "entertainment_and_fun"],
-        ["7", "sports"],
-    ];
-
-    for (const [catNumber, fileName] of categories) {
+    for (const [catNumber, fileName, displayName] of categories) {
         const qs = questions
             .filter((q) => q.categoryNumber === catNumber)
             .slice(0, MAX_QUESTIONS_PER_CATEGORY);
 
         const output = qs.map(generateQuestionHtml).join("\n");
-        await fs.writeFile(`./dist/${fileName}.html`, output, "utf-8");
+
+        const fullHtml = `${generateMainHtml(displayName)}\n${output}\n${generateEndHtml()}`;
+
+        await fs.writeFile(`./dist/${fileName}.html`, fullHtml, "utf-8");
+    }
+
+    const publicPath = "./public";
+
+    const files = await fs.readdir(publicPath);
+
+    for (const file of files) {
+        await fs.copyFile(
+            path.join(publicPath, file),
+            path.join(distPath, file),
+        );
     }
 }
 
