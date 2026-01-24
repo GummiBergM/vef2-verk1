@@ -16,7 +16,7 @@ for (let i = 0;i < categories.length; i++) {
     div.classList.add("card");
 
     const a = document.createElement("a");
-    a.href = "../dist/" + categories[i][1] + ".html";
+    a.href = "./" + categories[i][1] + ".html";
     a.textContent = categories[i][0];
     div.appendChild(a);
     categoriesIndex.appendChild(div);
