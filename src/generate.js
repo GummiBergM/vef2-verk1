@@ -3,6 +3,9 @@ import path from "node:path";
 
 const MAX_QUESTIONS_PER_CATEGORY = 100;
 
+const css = "./styles.css";
+const js = "./questions.js"
+
 const categories = [
     ["1", "general_knowledge", "Almenn kunnátta"],
     ["2", "nature_and_science", "Náttúra og vísindi"],
@@ -10,7 +13,7 @@ const categories = [
     ["4", "history", "Saga"],
     ["5", "geology", "Landafræði"],
     ["6", "entertainment_and_fun", "Skemmtun og afþreying"],
-    ["7", "sports", "Íþróttir og tómstundir"],
+    ["7", "sports", "Íþróttir og tómstundir"]
 ];
 
 function parseLine(line) {
@@ -41,7 +44,7 @@ function generateMainHtml(title) {
 <html lang="is">
   <head>
     <title>${title}</title>
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="${css}">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
@@ -57,7 +60,7 @@ function generateMainHtml(title) {
 function generateEndHtml() {
     return `
     </main>
-    <script src="./questions.js"></script>
+    <script src="${js}"></script>
   </body>
 </html>
     `;
@@ -93,6 +96,9 @@ async function main() {
         const fullHtml = `${generateMainHtml(displayName)}\n${output}\n${generateEndHtml()}`;
 
         await fs.writeFile(`./dist/${fileName}.html`, fullHtml, "utf-8");
+
+
+
     }
 
     const publicPath = "./public";
