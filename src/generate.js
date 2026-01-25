@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-const MAX_QUESTIONS_PER_CATEGORY = 100;
+const MAX_QUESTIONS_PER_CATEGORY = 10000;
 
 const css = "./styles.css";
 const js = "./questions.js"
@@ -66,9 +66,49 @@ function generateEndHtml() {
     `;
 }
 
+function toSubClass(subNumber) {
+    const sub = (subNumber ?? "").trim();
+
+    if (!sub) return "";
+
+    return `sub-${sub
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^\p{L}\p{N}_-]/gu, "")}`;
+}
+
+function generateSubButtons(qs) {
+    const subs = Array.from(
+        new Set(
+            qs
+                .map((q) => (q.subNumber ?? "").trim())
+                .filter(Boolean),
+        ),
+    );
+
+    if (subs.length === 0) return "";
+
+    const buttons = subs
+        .map((sub) => {
+            const subClass = toSubClass(sub);
+            return `<button class="subButton" type="button" data-sub="${subClass}">${sub}</button>`;
+        })
+        .join("\n");
+
+    return `
+    <nav class="subButtons">
+${buttons}
+    </nav>
+    `;
+}
+
 function generateQuestionHtml(q) {
+    const subClass = toSubClass(q.subNumber);
+
+    const classes = ["question", subClass].filter(Boolean).join(" ");
+
     const html = `
-    <section class="question">
+    <section class="${classes}">
       <h3>${q.question}</h3>
       <p>${q.answer}</p>
     </section>`;
@@ -92,13 +132,11 @@ async function main() {
             .slice(0, MAX_QUESTIONS_PER_CATEGORY);
 
         const output = qs.map(generateQuestionHtml).join("\n");
+        const buttonsHtml = generateSubButtons(qs);
 
-        const fullHtml = `${generateMainHtml(displayName)}\n${output}\n${generateEndHtml()}`;
+        const fullHtml = `${generateMainHtml(displayName)}\n${buttonsHtml}\n${output}\n${generateEndHtml()}`;
 
         await fs.writeFile(`./dist/${fileName}.html`, fullHtml, "utf-8");
-
-
-
     }
 
     const publicPath = "./public";
