@@ -110,7 +110,11 @@ function generateQuestionHtml(q) {
     const html = `
     <section class="${classes}">
       <h3>${q.question}</h3>
-      <p>${q.answer}</p>
+      <div class="questionButtons">
+        <button class="correct">Rétt</button>
+        <p>${q.answer}</p>
+        <button class="wrong">Rangt</button>
+      </div>
     </section>`;
 
     return html;
