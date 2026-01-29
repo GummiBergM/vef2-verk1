@@ -3,8 +3,8 @@ import path from "node:path";
 
 const MAX_QUESTIONS_PER_CATEGORY = 10000;
 
-const css = "./styles.css";
-const js = "./questions.js"
+const css = "../public/styles.css";
+const js = "../public/questions.js"
 
 const categories = [
     ["1", "general_knowledge", "Almenn kunnátta"],
@@ -48,6 +48,11 @@ function generateMainHtml(title) {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
+  
+  <header>
+    <h3 id="correctCounter">0</h3>
+    <h3 id="wrongCounter">0</h3>
+  </header>
   
   <body>
     <div class="title">

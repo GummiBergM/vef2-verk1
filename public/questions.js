@@ -1,13 +1,41 @@
 const questions = document.querySelectorAll(".question");
 const buttons = document.querySelectorAll(".subButton");
+const header = document.querySelector("header");
 
-// Card click: toggle highlight + reveal the answer buttons inside that card
+let correctCount = 0;
+let wrongCount = 0;
+let percent = 50;
+
+const MAX_QUESTIONS = 100;
+
+function showOnlyFirstN(list, n = MAX_QUESTIONS) {
+    questions.forEach((q) => {
+        q.style.display = "none";
+    });
+
+    Array.from(list).slice(0, n).forEach((q) => {
+        q.style.display = "block";
+    });
+}
+
+// Header background colour percent based on questions answered correctly
+function updateHeaderBackground() {
+    const total = correctCount + wrongCount;
+    percent = total === 0 ? 50 : (correctCount / total) * 100;
+    header.style.background = `linear-gradient(to right, var(--green) ${percent}%, var(--red) ${percent}%)`;
+}
+
+updateHeaderBackground();
+
+showOnlyFirstN(questions);
+
+
+
 questions.forEach((card) => {
     const correctBtn = card.querySelector("button.correct");
     const wrongBtn = card.querySelector("button.wrong");
 
     card.addEventListener("click", (e) => {
-        // If user clicked one of the inner buttons, don't treat it as a card click.
         if (e.target.closest("button")) return;
 
         card.classList.add("clickedCard");
@@ -20,16 +48,24 @@ questions.forEach((card) => {
         card.classList.add("correctCard");
         correctBtn.classList.add("hideButton");
         wrongBtn.classList.add("hideButton");
+        
+        correctCount++;
+        document.getElementById("correctCounter").textContent = correctCount;
+        updateHeaderBackground();
     });
 
     wrongBtn.addEventListener("click", () => {
         card.classList.add("wrongCard");
         correctBtn.classList.add("hideButton");
         wrongBtn.classList.add("hideButton");
+
+        wrongCount++;
+        document.getElementById("wrongCounter").textContent = wrongCount;
+        updateHeaderBackground();
     });
 });
 
-// Subcategory filter buttons
+
 buttons.forEach((btn) => {
     btn.addEventListener("click", () => {
         buttons.forEach((b) => b.classList.remove("buttonClicked"));
@@ -37,15 +73,7 @@ buttons.forEach((btn) => {
 
         const sub = btn.dataset.sub;
 
-        // Hide all questions first
-        questions.forEach((q) => {
-            q.style.display = "none";
-        });
-
-        // Show matching questions
         const matching = document.querySelectorAll(".question." + sub);
-        matching.forEach((q) => {
-            q.style.display = "block";
-        });
+        showOnlyFirstN(matching);
     });
 });

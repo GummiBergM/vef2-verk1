@@ -244,3 +244,28 @@ button {
     background-color: var(--white);
     color: var(--black);
 }
+
+
+/* HEADER */
+
+header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background: linear-gradient(to right, var(--green) 50%, var(--red) 50%);
+    border-radius: 50px;
+    position: sticky;
+    top: 50px;
+    margin: auto;
+    transition: background 1s ease-in-out;
+    max-width: 500px;
+}
+
+header h3 {
+    font-size: 30px;
+    margin: 0;
+    color: var(--white);
+    padding: 6px 18px;
+
+
+}
